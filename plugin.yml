@@ -1,0 +1,6 @@
+name: ALoadingNotifier
+version: 1.0
+
+main: au.com.addstar.notifier.PingPlugin
+
+load: STARTUP

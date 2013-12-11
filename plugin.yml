@@ -4,3 +4,13 @@ version: 1.0
 main: au.com.addstar.notifier.PingPlugin
 
 load: STARTUP
+
+permissions:
+  loadingnotifier.motdreload:
+    default: op
+
+commands:
+  motdreload:
+    permission: loadingnotifier.motdreload
+    usage: /<command>
+    

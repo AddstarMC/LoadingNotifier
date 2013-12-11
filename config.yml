@@ -1,3 +1,10 @@
 
-#The message to be displayed. You can use multiple lines creating line breaks with \n. You can use colors using &
-message: The server is starting up. Please wait
+#The message to be displayed during load. You can use multiple lines creating line breaks with \n. You can use colors using &
+# %motd% gets replaced with whatever is in motd in server.properties
+loading: The server is starting up. Please wait
+
+#The messages to be displayed during runtime. You can use multiple lines creating line breaks with \n. You can use colors using &
+# %motd% gets replaced with whatever is in motd in server.properties
+# Each entry will be randomly chosen to display to a client upon pinging the server
+messages:
+ - "%motd%"

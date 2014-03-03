@@ -10,6 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,6 +19,9 @@ public class PingPlugin extends JavaPlugin implements Listener
 {
 	private boolean mHasLoaded = false;
 	private String mLoadingMessage;
+	private String mKickMessage;
+	private int mStartupDelay;
+	
 	private List<String> mMessages;
 	private Random mRandom = new Random();
 	
@@ -36,6 +41,13 @@ public class PingPlugin extends JavaPlugin implements Listener
 		else
 			event.setMotd(process(mMessages.get(mRandom.nextInt(mMessages.size()))));
 	}
+	
+	@EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
+	private void onPlayerLoad(AsyncPlayerPreLoginEvent event)
+	{
+		if(!mHasLoaded)
+			event.disallow(Result.KICK_OTHER, mKickMessage);
+	}
 
 	private void loadConfig()
 	{
@@ -45,6 +57,14 @@ public class PingPlugin extends JavaPlugin implements Listener
 		mLoadingMessage = getConfig().getString("loading");
 		mLoadingMessage = ChatColor.translateAlternateColorCodes('&', mLoadingMessage);
 		mLoadingMessage = mLoadingMessage.replace("\\n", "\n");
+		
+		mKickMessage = getConfig().getString("kickMessage", "The server is starting up. Please try again soon.");
+		mKickMessage = ChatColor.translateAlternateColorCodes('&', mKickMessage);
+		mKickMessage = mKickMessage.replace("\\n", "\n");
+		
+		mStartupDelay = getConfig().getInt("startupDelay", 300);
+		if(mStartupDelay < 0)
+			mStartupDelay = 300;
 		
 		mMessages = getConfig().getStringList("messages");
 		
@@ -63,14 +83,14 @@ public class PingPlugin extends JavaPlugin implements Listener
 		
 		mHasLoaded = false;
 		Bukkit.getPluginManager().registerEvents(this, this);
-		Bukkit.getScheduler().runTask(this, new Runnable()
+		Bukkit.getScheduler().runTaskLater(this, new Runnable()
 		{
 			@Override
 			public void run()
 			{
 				mHasLoaded = true;
 			}
-		});
+		}, mStartupDelay);
 	}
 	
 	@Override

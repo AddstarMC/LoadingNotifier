@@ -8,3 +8,9 @@ loading: The server is starting up. Please wait
 # Each entry will be randomly chosen to display to a client upon pinging the server
 messages:
  - "%motd%"
+ 
+# The message displayed to users that attempt to join before
+kickMessage: The server is starting up. Please try again soon.
+
+# The number of ticks to wait after the first tick before the startup phase is considered to be over.
+startupDelay: 300

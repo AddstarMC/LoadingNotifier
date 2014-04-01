@@ -14,3 +14,6 @@ kickMessage: The server is starting up. Please try again soon.
 
 # The number of ticks to wait after the first tick before the startup phase is considered to be over.
 startupDelay: 300
+
+# The maximum player value to report to a client upon pinging the server
+maxplayers: 100

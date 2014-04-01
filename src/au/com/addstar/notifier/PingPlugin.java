@@ -20,6 +20,7 @@ public class PingPlugin extends JavaPlugin implements Listener
 	private boolean mHasLoaded = false;
 	private String mLoadingMessage;
 	private String mKickMessage;
+	private int mMaxPlayers;
 	private int mStartupDelay;
 	
 	private List<String> mMessages;
@@ -36,7 +37,7 @@ public class PingPlugin extends JavaPlugin implements Listener
 		if(!mHasLoaded)
 		{
 			event.setMotd(process(mLoadingMessage));
-			event.setMaxPlayers(1);
+			event.setMaxPlayers(mMaxPlayers);
 		}
 		else
 			event.setMotd(process(mMessages.get(mRandom.nextInt(mMessages.size()))));
@@ -66,6 +67,10 @@ public class PingPlugin extends JavaPlugin implements Listener
 		if(mStartupDelay < 0)
 			mStartupDelay = 300;
 		
+		mMaxPlayers = getConfig().getInt("maxplayers", 100);
+		if(mMaxPlayers < 1)
+			mMaxPlayers = 1;
+
 		mMessages = getConfig().getStringList("messages");
 		
 		if(mMessages.isEmpty())

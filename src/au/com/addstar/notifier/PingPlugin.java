@@ -1,5 +1,6 @@
 package au.com.addstar.notifier;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
 
@@ -24,11 +25,14 @@ public class PingPlugin extends JavaPlugin implements Listener
 	private int mStartupDelay;
 	
 	private List<String> mMessages;
+	private String mLegacyMessage;
 	private Random mRandom = new Random();
+	
+	private String mOriginalMOTD;
 	
 	private String process(String message)
 	{
-		return message.replace("%motd%", ChatColor.translateAlternateColorCodes('&', getServer().getMotd()));
+		return message.replace("%motd%", mOriginalMOTD);
 	}
 	
 	@EventHandler(priority=EventPriority.LOWEST, ignoreCancelled = true)
@@ -78,6 +82,8 @@ public class PingPlugin extends JavaPlugin implements Listener
 		
 		for(int i = 0; i < mMessages.size(); ++i)
 			mMessages.set(i, ChatColor.translateAlternateColorCodes('&', mMessages.get(i)).replace("\\n", "\n"));
+		
+		mLegacyMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("legacyMessage", "%motd%"));
 	}
 	
 	@Override
@@ -85,14 +91,17 @@ public class PingPlugin extends JavaPlugin implements Listener
 	{
 		getDataFolder().mkdirs();
 		loadConfig();
+		mOriginalMOTD = ChatColor.translateAlternateColorCodes('&', Bukkit.getMotd());
 		
 		mHasLoaded = false;
+		setServerMotd(process(mLoadingMessage));
 		Bukkit.getPluginManager().registerEvents(this, this);
 		Bukkit.getScheduler().runTaskLater(this, new Runnable()
 		{
 			@Override
 			public void run()
 			{
+				setServerMotd(process(mLegacyMessage));
 				mHasLoaded = true;
 			}
 		}, mStartupDelay);
@@ -104,10 +113,48 @@ public class PingPlugin extends JavaPlugin implements Listener
 		if(command.getName().equals("motdreload"))
 		{
 			loadConfig();
+			setServerMotd(process(mLegacyMessage));
 			sender.sendMessage(ChatColor.GREEN + "Config reloaded");
 			return true;
 		}
 		
 		return false;
+	}
+	
+	private static Object mServer;
+	private static Method mSetMotdMethod;
+	
+	public static void setServerMotd(String motd)
+	{
+		if(mServer == null)
+		{
+			try
+			{
+				Class<?> clazz = Bukkit.getServer().getClass();
+				Method getServer = clazz.getMethod("getServer");
+				mServer = getServer.invoke(Bukkit.getServer());
+				
+				clazz = mServer.getClass();
+				mSetMotdMethod = clazz.getMethod("setMotd", String.class);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				mServer = false;
+				return;
+			}
+		}
+		
+		if(!(mServer instanceof Boolean))
+		{
+			try
+			{
+				mSetMotdMethod.invoke(mServer, motd);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
 	}
 }

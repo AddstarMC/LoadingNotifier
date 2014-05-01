@@ -8,6 +8,10 @@ loading: The server is starting up. Please wait
 # Each entry will be randomly chosen to display to a client upon pinging the server
 messages:
  - "%motd%"
+
+# The message legacy pings will see. This does not support multiple lines, but does support color.
+# Loading will still show the loading message
+legacyMessage: "%motd"
  
 # The message displayed to users that attempt to join before
 kickMessage: The server is starting up. Please try again soon.

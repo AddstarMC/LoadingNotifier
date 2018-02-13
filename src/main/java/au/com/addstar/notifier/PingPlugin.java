@@ -26,7 +26,7 @@ public class PingPlugin extends JavaPlugin implements Listener
 	
 	private List<String> mMessages;
 	private String mLegacyMessage;
-	private Random mRandom = new Random();
+	private final Random mRandom = new Random();
 	
 	private String mOriginalMOTD;
 	
@@ -96,15 +96,10 @@ public class PingPlugin extends JavaPlugin implements Listener
 		mHasLoaded = false;
 		setServerMotd(process(mLoadingMessage));
 		Bukkit.getPluginManager().registerEvents(this, this);
-		Bukkit.getScheduler().runTaskLater(this, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				setServerMotd(process(mLegacyMessage));
-				mHasLoaded = true;
-			}
-		}, mStartupDelay);
+		Bukkit.getScheduler().runTaskLater(this, () -> {
+            setServerMotd(process(mLegacyMessage));
+            mHasLoaded = true;
+        }, mStartupDelay);
 	}
 	
 	@Override
@@ -124,7 +119,7 @@ public class PingPlugin extends JavaPlugin implements Listener
 	private static Object mServer;
 	private static Method mSetMotdMethod;
 	
-	public static void setServerMotd(String motd)
+	private static void setServerMotd(String motd)
 	{
 		if(mServer == null)
 		{

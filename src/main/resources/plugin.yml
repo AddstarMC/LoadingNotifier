@@ -1,8 +1,8 @@
 name: ALoadingNotifier
-version: ${pom.version}
-
+version: ${plugin.version}
+author: Schmoller, Narimm
 main: au.com.addstar.notifier.PingPlugin
-
+description: ${project.description}
 load: STARTUP
 
 permissions:

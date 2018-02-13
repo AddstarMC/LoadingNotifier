@@ -2,9 +2,17 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>au.com.addstar</groupId>
   <artifactId>ALoadingNotifier</artifactId>
-  <version>1.0.0.${env.BUILD_NUMBER}</version>
+  <version>1.0.0</version>
   <name>ALoadingNotifier</name>
-
+  <description>A plugin that simply modifies the MOTD on the fly.</description>
+  <properties>
+    <build.number />
+    <plugin.version>${project.version}-${build.number}</plugin.version>
+    <mainClass>au.com.addstar.notifier.PingPlugin</mainClass>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spigot.version>1.12.2-R0.1-SNAPSHOT</spigot.version>
+    <monolith.version>1.4.8-SNAPSHOT</monolith.version>
+  </properties>
   <repositories>
     <!-- Repository for Bukkit -->
     <repository>
@@ -38,7 +46,8 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.7.2-R0.3-SNAPSHOT</version>
+      <version>1.12.1-R0.1-SNAPSHOT</version>
+        <scope>provided</scope>
     </dependency>        
                                                         
   </dependencies>
@@ -48,7 +57,7 @@
       <resource>
         <targetPath>.</targetPath>
         <filtering>true</filtering>
-        <directory>${basedir}/.</directory>
+        <directory>src/main/resources</directory>
         <includes>
           <include>plugin.yml</include>
           <include>config.yml</include>
@@ -61,15 +70,15 @@
       </resource>
     </resources>
 
-    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>src/main/java</sourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
     </plugins>
